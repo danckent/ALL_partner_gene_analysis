@@ -1,3 +1,4 @@
+setwd("/home/dankent/Data/ALL_partner_gene/")
 library( GenomicRanges)
 library( tibble)
 library( plyranges)
@@ -145,38 +146,33 @@ for( map_num in 1) {
   }
   
   write.table( all_random_starts, quote = F, row.names = F, col.names = F,
-               file = paste0( output_dir, "partner_gene_global_random_intervals_random_starts_", set, "_",
+               file = paste0( output_dir, "partner_gene_global_random_intervals_random_starts_30_04_21_", set, "_",
                               total_permuts, ".txt"))
   rm( all_random_starts)  
   
   write.table( all_random_chrs, quote = F, row.names = F, col.names = F,
-               file = paste0( output_dir, "partner_gene_global_random_intervals_random_chrs_", set, "_",
+               file = paste0( output_dir, "partner_gene_global_random_intervals_random_chrs_30_04_21_", set, "_",
                               total_permuts, ".txt"))
   rm( all_random_chrs)
   
   save( set_ranges, 
-        file = paste0( output_dir, "partner_gene_global_random_intervals_original_", set, "_GRanges.RData"))
+        file = paste0( output_dir, "partner_gene_global_random_intervals_original_30_04_21_", set, "_GRanges.RData"))
   
   
   print( set)
 }
 
-save( both_sets, total_permuts, file = "/home/dankent/Data/ALL_partner_genes/partner_genes.RData")
+save( both_sets, total_permuts, file = "~/Data/ALL_partner_gene/partner_genes30_04_21_.RData")
 
 #### RANDOM PARTNER GENE RANGES IN GENES #######
-load("/home/dankent/Data/ALL_partner_genes/partner_gene_global_random_intervals/output/Lisa_genes_match_1000permuts.RData")
+load("~/Data/ALL_partner_gene/partner_gene_global_random_intervals/output/partner_gene_global_random_intervals_original_30_04_21_Lisa_genes_match_GRanges.RData")
 
 ## Loading RANDOM STARTS and CHROMOSOMES
-chromosomes <- read.table("~/Data/ALL_partner_genes/partner_gene_global_random_intervals/output/partner_gene_global_random_intervals_random_chrs_Lisa_genes_match_1000.txt", stringsAsFactors = F, header = F)
+chromosomes <- read.table("~/Data/ALL_partner_gene/partner_gene_global_random_intervals/output/partner_gene_global_random_intervals_random_chrs_30_04_21_Lisa_genes_match_1000.txt", stringsAsFactors = F, header = F)
 print("chromosomes.loaded")
 
-starts <- read.table("~/Data/ALL_partner_genes/partner_gene_global_random_intervals/output/partner_gene_global_random_intervals_random_starts_Lisa_genes_match_1000.txt", stringsAsFactors = F, header = F)
+starts <- read.table("~/Data/ALL_partner_gene/partner_gene_global_random_intervals/output/partner_gene_global_random_intervals_random_starts_30_04_21_Lisa_genes_match_1000.txt", stringsAsFactors = F, header = F)
 print("starts.loaded")
-
-# original_ranges
-load("partner_gene_global_random_intervals/output/partner_gene_global_random_intervals_original_Lisa_genes_match_GRanges.RData")
-
-print("original_ranges.loaded")
 
 # Random values
 ran  <- c()
@@ -200,7 +196,7 @@ while(ncol(chromosomes) > 0) {
 
 save(ran,
       file = paste0( "partner_gene_global_random_intervals/output/", 
-                     set, "_",
+                     set, "_30_04_21_",
                      total_permuts, "permuts.RData"))
 
 
@@ -210,7 +206,7 @@ Nearest_Random_TAD_df <- data.frame(Nearest_Random_TAD)
 
 #creat mid-point for all random genes 
 #re-load starts
-starts <- read.table("~/Data/ALL_partner_genes/partner_gene_global_random_intervals/output/partner_gene_global_random_intervals_random_starts_Lisa_genes_match_1000.txt", stringsAsFactors = F, header = F)
+starts <- read.table("~/Data/ALL_partner_gene/partner_gene_global_random_intervals/output/partner_gene_global_random_intervals_random_starts_30_04_21_Lisa_genes_match_1000.txt", stringsAsFactors = F, header = F)
 midpoint_all <- starts+(Lisa_genes_match_DF$width/2)
 #all in one row
 midpoint_all <- data.frame(unlist(midpoint_all))
@@ -239,6 +235,19 @@ Distance_mid_to_TAD_df <- data.frame(Distance_mid_to_TAD)
 
 #### Visualise
 
-boxplot(Distance_mid_to_TAD_df$Distance_mid_to_TAD, Distance_Random_mid_to_TAD_df$Distance_Random_mid_to_TAD, outline=FALSE, ylab = "Distance between the mid point of the gene and the start/end of the TAD", xlab = "Observed                                                                                      Random")
+boxplot(Distance_mid_to_TAD_df$Distance_mid_to_TAD, Distance_Random_mid_to_TAD_df$Distance_Random_mid_to_TAD, 
+        outline=FALSE, main = "Distance between gene and the nearest TAD", 
+        xlab = "Partner Genes                                                                      Random",
+        col = "#037fff",
+        ylab = "Distance (bp)")
 
 save(Distance_mid_to_TAD_df, Distance_Random_mid_to_TAD_df, file = "/home/dankent/Data/GM12878/Partner Gene Proximity TAD Boundary/for_Marco.RData")
+
+
+######### PLOT FOR 2ND YR REPORT made with Real random script to show both random methods 
+
+boxplot(Distance_mid_to_TAD_df$Distance_mid_to_TAD, Distance_Random_mid_to_TAD, random_tad$Distance_Random_mid_to_TAD, outline=FALSE, 
+        ylab = "Distance (bp)", 
+        xlab = "IGH Partner Genes                 Random Genes                Random Ranges",
+        main = "Distance between gene/ranges and the nearest TAD", 
+        col = c("#E69F00", "#56B4E9", "#E1341E" ))
